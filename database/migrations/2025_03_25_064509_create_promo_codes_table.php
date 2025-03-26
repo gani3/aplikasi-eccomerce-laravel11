@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('promo_codes', function (Blueprint $table) {
             $table->id();
-            $table->integer('discount_amount');
+            $table->unsignedBigInteger('discount_amount');
             $table->string('code');
             $table->timestamps();
         });
