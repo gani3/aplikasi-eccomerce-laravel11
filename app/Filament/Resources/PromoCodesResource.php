@@ -24,14 +24,14 @@ class PromoCodesResource extends Resource
         return $form
             ->schema([
                 //
+                Forms\Components\TextInput::make('code')
+                ->required()
+                ->unique('promo_codes','code'),
                 Forms\Components\TextInput::make('discount_amount')
                 ->required()
                 ->numeric()
                 ->prefix('IDR')
-                ->label('Total Discount'),
-                Forms\Components\TextInput::make('code')
-                ->required()
-                ->unique('promo_codes','code')
+                ->label('Total Discount')
             ]);
     }
 

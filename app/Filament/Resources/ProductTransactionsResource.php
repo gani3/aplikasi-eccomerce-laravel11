@@ -10,6 +10,7 @@ use Filament\Forms;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\ToggleButtons;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -150,7 +151,7 @@ class ProductTransactionsResource extends Resource
                     ->schema(([
                         Forms\Components\TextInput::make('booking_trx_id')
                             ->required()
-                            ->unique('product_transactions','booking_trx_id')
+                            ->unique('product_transactions','booking_trx_id',ignoreRecord: true)
                             ->maxLength(255),
 
                             ToggleButtons::make('is_paid')
@@ -201,6 +202,22 @@ class ProductTransactionsResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\ViewAction::make(),
+                Tables\Actions\Action::make('approve')
+                ->label('Approve')
+                ->action(function(ProductTransactions $record){
+                    $record->is_paid = true;
+                    $record->save();
+
+                    Notification::make()
+                    ->title('Order Approved')
+                    ->success()
+                    ->body('Pesanan telah di setujui')
+                    ->send();
+                })
+                ->color('success')
+                ->requiresConfirmation()
+                ->visible(fn (ProductTransactions $record) => !$record->is_paid)
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
